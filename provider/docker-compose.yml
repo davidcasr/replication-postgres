@@ -1,0 +1,42 @@
+version: '3'
+    
+services:
+  db:
+    container_name: provider-db
+    hostname: provider-db
+    build: ./database
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+    env_file:
+      - ./database/.env
+    networks:
+      - provider-network
+      - external-network
+  pgadmin:
+    container_name: provider-pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - db
+    ports:
+      - "5051:5051"
+    links:
+        - "db:pgsql-server"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: provider@provider.com
+      PGADMIN_DEFAULT_PASSWORD: provider
+      PGADMIN_LISTEN_PORT: 5051
+    networks:
+      - provider-network
+      - external-network
+networks:
+  provider-network:
+    name: provider-network
+  external-network:
+    name: external-network
+
+volumes:
+  database-data:
+  pgadmin-data:

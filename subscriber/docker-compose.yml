@@ -1,0 +1,22 @@
+version: '3'
+    
+services:
+  db:
+    container_name: subscriber-db
+    hostname: subscriber-db
+    build: ./database
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+    env_file:
+      - ./database/.env
+    networks:
+      - subscriber-network
+      - external-network
+networks:
+  subscriber-network:
+    name: subscriber-network
+  external-network:
+    external: true
+
+volumes:
+  database-data:
